@@ -1,0 +1,33 @@
+format_version: "11"
+
+default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
+
+project_type: other
+
+workflows:
+  primary:
+    steps:
+      - script:
+          title: Build
+          inputs:
+            - content: |-
+                #!/usr/bin/env bash
+                set -ex
+
+                python3 -m venv venv
+                ./venv/bin/pip install --upgrade pip
+                ./venv/bin/pip install -r requirements.txt
+
+                mkdir -p ./bin
+                gcc raj.c -o ./bin/bgmi -lm
+                chmod +x ./bin/bgmi
+
+      - script:
+          title: Run
+          inputs:
+            - content: |-
+                #!/usr/bin/env bash
+                set -ex
+
+                ./bin/bgmi &
+                ./venv/bin/python a.py
